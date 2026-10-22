@@ -1,3 +1,22 @@
+<!-- forks:start -->
+
+**Forks of [CowboyBingus/BingusSharedLoader](https://github.com/CowboyBingus/BingusSharedLoader) and their latest releases** (auto-updated daily)
+
+| Repo | Latest release | Released | Last push |
+|---|---|---|---|
+| [CowboyBingus/BingusSharedLoader](https://github.com/CowboyBingus/BingusSharedLoader) (upstream) | ![release: v20](https://img.shields.io/badge/release-v20-blue) | ![released: 2026-10-18](https://img.shields.io/badge/released-2026--10--18-blue) | ![pushed: 2026-10-20](https://img.shields.io/badge/pushed-2026--10--20-informational) |
+| [NatsunXD/BingusSharedLoader](https://github.com/NatsunXD/BingusSharedLoader) | ![release: v14](https://img.shields.io/badge/release-v14-blue) | ![released: 2026-09-18](https://img.shields.io/badge/released-2026--09--18-blue) | ![pushed: 2026-09-18](https://img.shields.io/badge/pushed-2026--09--18-informational) |
+| [make-helldivers-great-again/mhga-shared-loader](https://github.com/make-helldivers-great-again/mhga-shared-loader) (this fork) | ![release: none](https://img.shields.io/badge/release-none-lightgrey) | ![released: never](https://img.shields.io/badge/released-never-lightgrey) | ![pushed: 2026-10-22](https://img.shields.io/badge/pushed-2026--10--22-informational) |
+| [xiyan520/BingusSharedLoader](https://github.com/xiyan520/BingusSharedLoader) | ![release: none](https://img.shields.io/badge/release-none-lightgrey) | ![released: never](https://img.shields.io/badge/released-never-lightgrey) | ![pushed: 2026-10-20](https://img.shields.io/badge/pushed-2026--10--20-informational) |
+| [nnikolajev/BingusSharedLoader](https://github.com/nnikolajev/BingusSharedLoader) | ![release: none](https://img.shields.io/badge/release-none-lightgrey) | ![released: never](https://img.shields.io/badge/released-never-lightgrey) | ![pushed: 2026-10-08](https://img.shields.io/badge/pushed-2026--10--08-informational) |
+| [Disguiser-D/BingusSharedLoader](https://github.com/Disguiser-D/BingusSharedLoader) | ![release: none](https://img.shields.io/badge/release-none-lightgrey) | ![released: never](https://img.shields.io/badge/released-never-lightgrey) | ![pushed: 2026-09-27](https://img.shields.io/badge/pushed-2026--09--27-informational) |
+| [sporeb/BingusSharedLoader](https://github.com/sporeb/BingusSharedLoader) | ![release: none](https://img.shields.io/badge/release-none-lightgrey) | ![released: never](https://img.shields.io/badge/released-never-lightgrey) | ![pushed: 2026-09-26](https://img.shields.io/badge/pushed-2026--09--26-informational) |
+| [byonezen/BingusSharedLoader](https://github.com/byonezen/BingusSharedLoader) | ![release: none](https://img.shields.io/badge/release-none-lightgrey) | ![released: never](https://img.shields.io/badge/released-never-lightgrey) | ![pushed: 2026-09-26](https://img.shields.io/badge/pushed-2026--09--26-informational) |
+| [jianbingchengwang/BingusSharedLoader](https://github.com/jianbingchengwang/BingusSharedLoader) | ![release: none](https://img.shields.io/badge/release-none-lightgrey) | ![released: never](https://img.shields.io/badge/released-never-lightgrey) | ![pushed: 2026-09-22](https://img.shields.io/badge/pushed-2026--09--22-informational) |
+| [ZhaoJle/BingusSharedLoader](https://github.com/ZhaoJle/BingusSharedLoader) | ![release: none](https://img.shields.io/badge/release-none-lightgrey) | ![released: never](https://img.shields.io/badge/released-never-lightgrey) | ![pushed: 2026-09-19](https://img.shields.io/badge/pushed-2026--09--19-informational) |
+
+<!-- forks:end -->
+
 > Supports Steam build 25480438 / EXE 1.8.46015.0. Tested in game aboard the ship and in a mission.
 
 ![Bingus Shared Loader](assets/banner.png)
