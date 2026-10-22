@@ -1,0 +1,32 @@
+name: Fork release badges
+
+# Regenerates the badge table at the top of README.md (see
+# .github/scripts/fork_badges.py): upstream + every fork, with each one's
+# latest release and date. Runs daily, after the upstream sync, and on demand.
+
+on:
+  schedule:
+    - cron: "47 4 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  badges:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Regenerate table
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 .github/scripts/fork_badges.py
+      - name: Commit if changed
+        run: |
+          if ! git diff --quiet README.md; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add README.md
+            git commit -m "chore: refresh fork release badges [skip ci]"
+            git push
+          fi

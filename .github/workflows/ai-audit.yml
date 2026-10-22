@@ -1,0 +1,96 @@
+name: AI audit (release PR)
+
+# Adds a malware/security-pattern review, code-quality notes and a short
+# improvement list to the open release-please release PR - as a section of
+# FORK-CHANGELOG.md on the release branch and in the PR description (inside the
+# release notes, so it ends up in the published GitHub Release too).
+#
+# Triggered after "Release Please" finishes (workflow_run) rather than on the PR
+# itself: PRs opened by Actions can have their pull_request workflows held for
+# manual approval, workflow_run is not gated that way.
+#
+# Needs one repo secret (Settings -> Secrets and variables -> Actions):
+#   ANTHROPIC_API_KEY (Claude, checked first)  or  OPENAI_API_KEY (GPT)
+# With neither set it logs a notice and exits cleanly.
+# Optional repo variable AI_AUDIT_MODEL pins an exact model id.
+
+on:
+  workflow_run:
+    workflows: ["Release Please"]
+    types: [completed]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  RELEASE_BRANCH: release-please--branches--main
+  CHANGELOG: FORK-CHANGELOG.md
+
+jobs:
+  audit:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Find the open release PR
+        id: pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          number=$(gh pr list --repo "${{ github.repository }}" --head "$RELEASE_BRANCH" --state open --json number --jq '.[0].number // empty')
+          if [ -z "$number" ]; then
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::No open release PR - nothing to audit."
+          else
+            echo "found=true" >> "$GITHUB_OUTPUT"
+            echo "number=$number" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check which AI provider is configured
+        id: provider
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          if [ -n "$ANTHROPIC_API_KEY" ]; then echo "name=anthropic" >> "$GITHUB_OUTPUT"
+          elif [ -n "$OPENAI_API_KEY" ]; then echo "name=openai" >> "$GITHUB_OUTPUT"
+          else
+            echo "name=none" >> "$GITHUB_OUTPUT"
+            echo "::notice::Neither ANTHROPIC_API_KEY nor OPENAI_API_KEY is set - skipping the AI audit."
+          fi
+
+      - name: Check out the release branch
+        if: steps.pr.outputs.found == 'true' && steps.provider.outputs.name != 'none'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.RELEASE_BRANCH }}
+          fetch-depth: 0
+
+      - name: Build the diff since the last release
+        if: steps.pr.outputs.found == 'true' && steps.provider.outputs.name != 'none'
+        run: |
+          git fetch --tags -q
+          # semver release tags only (vX.Y.Z); the upstream author's own two-part tags (v43...) are ignored
+          base=$(git tag -l 'v*' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1)
+          echo "Diffing against ${base:-<none>}"
+          if [ -n "$base" ]; then git diff "$base"...HEAD -- src scripts > /tmp/diff.txt || true
+          else git diff HEAD~1...HEAD -- src scripts > /tmp/diff.txt || true; fi
+          head -c 200000 /tmp/diff.txt > /tmp/diff.trimmed.txt
+          wc -c /tmp/diff.trimmed.txt
+
+      - name: Run AI audit
+        if: steps.pr.outputs.found == 'true' && steps.provider.outputs.name != 'none'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          AI_AUDIT_MODEL: ${{ vars.AI_AUDIT_MODEL }}
+        run: python3 .github/scripts/ai_audit.py --provider "${{ steps.provider.outputs.name }}" --diff /tmp/diff.trimmed.txt --out /tmp/audit.md
+
+      - name: Insert audit into the changelog and PR description
+        if: steps.pr.outputs.found == 'true' && steps.provider.outputs.name != 'none'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 .github/scripts/insert_audit.py --audit /tmp/audit.md --repo "${{ github.repository }}" \
+            --pr "${{ steps.pr.outputs.number }}" --token "${{ github.token }}" --changelog "$CHANGELOG"

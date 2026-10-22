@@ -1,0 +1,21 @@
+# Label definitions for MHGA Shared Loader. Synced by .github/workflows/labels-sync.yml (EndBug/label-sync)
+# on every push to main that touches this file; nothing existing is deleted.
+#   status:*  - the roadmap stages (Exploring / Planned / In progress / On hold / Completed / Discontinued)
+#   area:*    - which part of the loader a change touches (grouped from src/ and scripts/)
+#   (default GitHub labels - bug, documentation, enhancement, ... - are left as they are)
+
+# --- Status (roadmap stage) ---
+- {name: "status: exploring", color: "9CA3AF", description: "Idea is being investigated; not committed to yet"}
+- {name: "status: planned", color: "F59E0B", description: "Committed direction, not started"}
+- {name: "status: in progress", color: "FACC15", description: "Actively being worked on"}
+- {name: "status: on hold", color: "EF4444", description: "Paused - blocked, waiting on an upstream change, or needs rethinking"}
+- {name: "status: completed", color: "3B82F6", description: "Implemented; pending release/publishing"}
+- {name: "status: discontinued", color: "A855F7", description: "Will not be pursued; superseded or out of scope"}
+
+# --- Area ---
+- {name: "area: discovery", color: "BFD4F2", description: "Finding, verifying and ordering mod archives (src/discover.lua)"}
+- {name: "area: jit-cache", color: "FBCA04", description: "Shared LuaJIT code cache budget and the churn guard (jit_budget, jit_guard)"}
+- {name: "area: startup-gate", color: "E99695", description: "Game-build gate and the startup coordinator (build_gate, shared_loader)"}
+- {name: "area: logging-health", color: "C2E0C6", description: "Loader log, health report and diagnostics (health, frame_probe)"}
+- {name: "area: build-packaging", color: "5319E7", description: "Build/package/audit scripts, CI, release tooling"}
+- {name: "security", color: "B60205", description: "Security audit findings and hardening"}

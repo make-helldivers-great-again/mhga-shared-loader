@@ -1,0 +1,61 @@
+name: Sync with upstream
+
+# This fork follows CowboyBingus/BingusSharedLoader. Daily (and on demand) it
+# merges upstream's main into this fork's main and copies upstream tags.
+# A clean merge is pushed straight through; a conflicting one is NOT pushed -
+# an issue is opened instead so the conflict gets resolved by hand.
+#
+# Pushing changes that touch .github/workflows needs a token with the
+# `workflow` scope. If upstream ever adds workflow files, set a repo secret
+# SYNC_TOKEN (a PAT with repo + workflow); otherwise the default token is used.
+
+on:
+  schedule:
+    - cron: "17 4 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      UPSTREAM: CowboyBingus/BingusSharedLoader
+      GH_TOKEN: ${{ secrets.SYNC_TOKEN || github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.SYNC_TOKEN || github.token }}
+
+      - name: Fetch upstream
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add upstream "https://github.com/${UPSTREAM}.git"
+          git fetch upstream --tags --prune-tags 2>/dev/null || git fetch upstream --tags
+          echo "behind=$(git rev-list --count HEAD..upstream/main)" >> "$GITHUB_ENV"
+
+      - name: Merge upstream/main and re-apply branding
+        id: merge
+        if: env.behind != '0'
+        run: bash .github/scripts/sync_merge.sh
+
+      - name: Push merge and tags
+        if: steps.merge.outputs.result == 'clean'
+        run: |
+          git push origin HEAD:main
+          git push origin --tags
+
+      - name: Open an issue on conflict
+        if: steps.merge.outputs.result == 'conflict'
+        run: |
+          title="Upstream sync blocked by a merge conflict"
+          existing=$(gh issue list --state open --search "\"$title\" in:title" --json number --jq '.[0].number')
+          if [ -z "$existing" ]; then
+            gh issue create --title "$title" \
+              --body "Merging \`${UPSTREAM}\` main into this fork conflicts. Resolve locally: \`git fetch upstream && git merge upstream/main\`, fix the conflicts, push. This issue is opened once and left alone until closed."
+          fi
+          exit 1

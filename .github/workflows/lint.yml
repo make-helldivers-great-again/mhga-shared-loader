@@ -1,0 +1,101 @@
+name: Lint and test
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  privacy-audit:
+    name: Privacy audit (source tree)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scan allowlisted source files for leaked personal data
+        # privacy_audit.py treats the *current machine's username* as a secret and flags any file containing
+        # that word. On GitHub runners the user is "runner", which legitimately appears in text, so the audit
+        # false-positives in CI. There is no personal identity on a CI runner to protect, so give it a neutral
+        # one; every other check (emails, paths, tokens, IPs) still runs unchanged.
+        env:
+          LOGNAME: ci
+          USER: ci
+          USERNAME: ci
+          COMPUTERNAME: ""
+        run: python3 scripts/privacy_audit.py
+
+  python-lint:
+    name: Python lint (ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - run: uvx ruff check .
+
+  lua-syntax:
+    name: Lua syntax check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install luajit + luacheck
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y luajit luarocks
+          sudo luarocks install luacheck
+      - name: Parse every .lua file (catches syntax errors; no FFI/Windows needed)
+        run: |
+          status=0
+          while IFS= read -r -d '' file; do
+            luajit -e "local f, err = loadfile('$file'); if not f then print('$file: ' .. err); os.exit(1) end" || status=1
+          done < <(find . -name '*.lua' -print0)
+          exit $status
+      - name: luacheck
+        # Exit 0 = clean, 1 = warnings only, 2+ = real errors. Only fail on real errors; legacy style
+        # warnings stay visible but do not block.
+        run: |
+          set +e
+          luacheck . --config .luacheckrc
+          code=$?
+          set -e
+          if [ "$code" -ge 2 ]; then exit 1; fi
+
+  json-validity:
+    name: JSON validity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate pinned/manifest/contract JSON files
+        run: |
+          set -e
+          for f in dependencies.json publication-files.json tests/fixtures/loader-contract.json; do
+            python3 -c "import json; json.load(open('$f')); print('$f: ok')"
+          done
+
+  loader-tests:
+    name: Loader tests that need no game files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read pinned LuaJIT commit
+        id: pin
+        run: echo "commit=$(python3 -c "import json;print(json.load(open('dependencies.json'))['dependencies'][0]['commit'])")" >> "$GITHUB_OUTPUT"
+      - name: Cache LuaJIT (non-GC64)
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: tools/luajit-src
+          key: luajit-linux-nogc64-${{ steps.pin.outputs.commit }}
+      - name: Build the pinned LuaJIT, non-GC64 (same bytecode as msvcbuild.bat nogc64)
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          git clone https://github.com/LuaJIT/LuaJIT.git tools/luajit-src
+          git -C tools/luajit-src checkout ${{ steps.pin.outputs.commit }}
+          make -C tools/luajit-src -j"$(nproc)" XCFLAGS=-DLUAJIT_DISABLE_GC64
+      - name: Run the tests that take only src/ (the rest need a built loader, made from the game's own resources)
+        env:
+          HD2_LUAJIT: ${{ github.workspace }}/tools/luajit-src/src/luajit
+        run: |
+          set -e
+          for t in test_discovery test_jit_budget test_jit_guard test_logging; do
+            "$HD2_LUAJIT" tests/$t.lua src
+          done
+          python3 tests/test_addon_package.py
