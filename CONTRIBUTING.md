@@ -11,11 +11,11 @@ $env:HD2_CALLBACK_RESOURCE = (Resolve-Path 'artifacts/vanilla/wwise_flow_callbac
 python -B scripts/build.py
 ```
 
-The result is `releases/Bingus-Shared-Loader-v16.zip` under the base workspace, shared with the gameplay packages. A standalone checkout uses its own base directory. Intermediate files and reports remain in this project's `build/`. The original callback bytecode is wrapped with the authored coordinator. The boot resource is a test fixture and is not placed in the mod archive. The builder does not install mods or launch the game.
+The result is `releases/MHGA-Shared-Loader-v16.zip` under the base workspace, shared with the gameplay packages. A standalone checkout uses its own base directory. Intermediate files and reports remain in this project's `build/`. The original callback bytecode is wrapped with the authored coordinator. The boot resource is a test fixture and is not placed in the mod archive. The builder does not install mods or launch the game.
 
 ## Development-only frame probe build (never published)
 
-`python -B scripts/build.py --probe` builds `Bingus-Shared-Loader-v20-probe4.zip` into `build-probe/`, never into a releases folder. It embeds `src/frame_probe.lua` and inserts its two hooks into the coordinator at build time (`PROBE_HOOKS` in `scripts/build.py`), so the public build's sources and resource are unchanged. It times every mod's update and render and rotates normal, burn, bypass and without-ECS arms in 10 s blocks (frame probe schema 4) for the real-play study in PerformanceBaseline. Its revision is `loader-v20-probe4`, its loader log's second line names the probe, `runtime_verified` is always false, and `tests/test_package.py` and `scripts/privacy_audit.py` refuse it as a release. Never publish it.
+`python -B scripts/build.py --probe` builds `MHGA-Shared-Loader-v20-probe4.zip` into `build-probe/`, never into a releases folder. It embeds `src/frame_probe.lua` and inserts its two hooks into the coordinator at build time (`PROBE_HOOKS` in `scripts/build.py`), so the public build's sources and resource are unchanged. It times every mod's update and render and rotates normal, burn, bypass and without-ECS arms in 10 s blocks (frame probe schema 4) for the real-play study in PerformanceBaseline. Its revision is `loader-v20-probe4`, its loader log's second line names the probe, `runtime_verified` is always false, and `tests/test_package.py` and `scripts/privacy_audit.py` refuse it as a release. Never publish it.
 
 ## Marking a played build
 

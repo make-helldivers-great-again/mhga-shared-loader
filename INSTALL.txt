@@ -14,13 +14,13 @@ Logs: %LOCALAPPDATA%/CowboyBingus/Helldivers2/Logs
 
 
 
-Bingus Shared Loader - v20
+MHGA Shared Loader - v20
 
 
 
 REQUIRED DEPENDENCY
 
-Required by Armory Preview Cache, Know Your Constellation, Vanilla Plus Megapack or current Better Stratagem Bounce, Hellpod Steering Unlocked,
+Required by Armory Preview Cache, Know Your Constellation, MHGA or current Better Stratagem Bounce, Hellpod Steering Unlocked,
 
 Reinforcement Beacons Fixed, Consistent Vaulting, Shallow Water Diving,
 
@@ -28,7 +28,7 @@ Sentry Aim Retention, Enemy Collision Synchronized, Vehicle Stability, and Contr
 
 Install with Arsenal or HD2MM: import
 
-Bingus-Shared-Loader-v20.zip, enable it alongside your chosen mods, then click Deploy.
+MHGA-Shared-Loader-v20.zip, enable it alongside your chosen mods, then click Deploy.
 
 One loader installation supports all your selected mods.
 
@@ -36,7 +36,7 @@ One loader installation supports all your selected mods.
 
 ARSENAL LOAD ORDER
 
-Place Bingus Shared Loader LAST, at the bottom of the list, using Arsenal's
+Place MHGA Shared Loader LAST, at the bottom of the list, using Arsenal's
 
 default priority setting. If you enabled first-mod priority, place it first
 
@@ -52,11 +52,11 @@ Supported: Steam build 25480438 / EXE 1.8.46015.0.
 
 1. Close Helldivers 2.
 
-2. Remove or replace the previous Shared Mod Loader / Bingus Shared Loader entry
+2. Remove or replace the previous Shared Mod Loader / Bingus Shared Loader / MHGA Shared Loader entry
 
    in HDArsenal or HD2MM. Use only one manager.
 
-3. Import Bingus-Shared-Loader-v20.zip and Vanilla-Plus-Megapack-v42.zip or your chosen
+3. Import MHGA-Shared-Loader-v20.zip and MHGA-v42.zip or your chosen
 
    current gameplay module ZIPs. Current standalone copies can remain
 
@@ -94,7 +94,7 @@ A module loading successfully does not prove its gameplay behavior.
 
 HUD Ballistic Trajectory Overlay v2 (September 11, 2026):
 
-Install the original overlay separately. Give Bingus Shared Loader the winning
+Install the original overlay separately. Give MHGA Shared Loader the winning
 
 priority over the overlay, then Purge and Deploy. Arsenal's shared-file warning
 
@@ -157,4 +157,4 @@ Loader v13 registered Armory Preview Cache as an optional module using API 1.
 Loader v14 adds the shared folder for all updated CowboyBingus mod logs.
 
 Logs: %LOCALAPPDATA%\CowboyBingus\Helldivers2\Logs
-Requires Bingus Shared Loader v14 or newer for this log folder.
+Requires MHGA Shared Loader v14 or newer for this log folder.
