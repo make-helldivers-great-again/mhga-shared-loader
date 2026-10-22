@@ -3,12 +3,12 @@
 For authors of Helldivers 2 mods that run beside the CowboyBingus mods. Every Lua
 mod shares the game's one LuaJIT VM, its globals, its files and its native UI.
 This page lists what the CowboyBingus mods use, so that your mod can stay clear
-of it. It describes the sources released with Bingus Shared Loader v20, for Steam
+of it. It describes the sources released with MHGA Shared Loader v20, for Steam
 build 25480438 (October 2026). Each mod's README documents its own API in full.
 
 ## Loader contract (API 1)
 
-Bingus Shared Loader replaces `core/wwise/lua/wwise_flow_callbacks`. That resource
+MHGA Shared Loader replaces `core/wwise/lua/wwise_flow_callbacks`. That resource
 runs the game's original callbacks, then starts the mods and creates one global,
 `CowboyBingusModLoader`. A second copy of the loader finds the table and does
 nothing.
@@ -26,7 +26,7 @@ nothing.
 | `after_startup(fn)` | Runs `fn` once, after every module of this startup has started and before the first game update; at once when startup is over. See [AUTHORING.md](AUTHORING.md#running-code-once-every-mod-has-started). |
 | `jit` | The shared LuaJIT code cache: `managed`, `expanded`, `mcode_kb`, `traces`, `flushes`, `growths`, `watcher`; from v20 also `churn`, the churn guard's counts (see [TECHNICAL.md](TECHNICAL.md#luajit-churn-guard-v20)). |
 | `health` | The health report in the loader log (`header`, `changes`). |
-| `megapack` | Set by Vanilla Plus Megapack: `name`, `revision`, `modules`. |
+| `megapack` | Set by MHGA: `name`, `revision`, `modules`. |
 
 For mods written against v18, the loader declares six Windows functions under
 their plain names, with exactly these prototypes, at the same moments as v18.
@@ -92,8 +92,8 @@ Several mods keep a retired name so that existing files and tools keep working.
 
 | Mod | Resource under `mods/cowboybingus/` | Files | Global |
 | --- | --- | --- | --- |
-| Bingus Shared Loader | (`core/wwise/lua/wwise_flow_callbacks`) | `BingusSharedLoader.log` | `CowboyBingusModLoader` |
-| Vanilla Plus Megapack | `vanilla_plus_megapack`, plus each component's own name | none; components keep their own file names | `CowboyBingusModLoader.megapack` |
+| MHGA Shared Loader | (`core/wwise/lua/wwise_flow_callbacks`) | `BingusSharedLoader.log` | `CowboyBingusModLoader` |
+| MHGA | `vanilla_plus_megapack`, plus each component's own name | none; components keep their own file names | `CowboyBingusModLoader.megapack` |
 | Arc Thrower Revamped | `arc_thrower_auto` (retired) | `ArcThrowerAuto.log` (retired) | `ArcThrowerRevampedInstalled` |
 | Armory Preview Cache | `armory_preview_cache` | `ArmoryPreviewCache.log`; in `%LOCALAPPDATA%` itself: `ArmoryPreviewCache.ini` (read only), `ArmoryPreviewCache.profile` (with `.profile.tmp`, `.profile.bak`) | `ArmoryPreviewCache` |
 | Better Lobby Management | `better_lobby_management` | `BetterLobbyManagement.log` | `BetterLobbyManagement` |

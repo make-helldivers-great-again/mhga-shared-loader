@@ -9,10 +9,18 @@ import sys
 sys.dont_write_bytecode = True
 
 from archive import ARCHIVE, BOOT, BOOT_SHA, LUA, EXE_SHA, GAME_DLL_SHA, make_archive, resource_hash, sha
+from branding import load as load_branding
 from package import package_release
 
 ROOT = Path(__file__).resolve().parents[1]
 BUILD = ROOT / 'build'
+# Display name and file-name stem: the only place the loader's name enters the build (branding.json).
+BRANDING = load_branding(ROOT)
+# IDENTITY: fixed contracts, never derived from the name above (docs/IDENTITY.md). The manager keys the package on
+# GUID, and the gameplay packs list it in their `requires`. tests/test_branding.py pins it and checks it is a plain
+# constant. The loader's own protocol (the CowboyBingusModLoader global, log file, log header, console prefix) lives
+# in src/ and is pinned there.
+GUID = '612eaf70-d682-43c7-9efd-16dcc695f977'
 CALLBACK_SHA = '05BBF52978028758B39F5B91A30A695D20069CEABD774D88755F0582A296BEC9'
 CALLBACK_PATH = 'core/wwise/lua/wwise_flow_callbacks'
 # The SHA-256 of the Wwise callbacks resource the maintainer played, or None
@@ -216,9 +224,10 @@ def main():
     files = {f'data/{ARCHIVE}{suffix}': f'{BUILD.name}/{ARCHIVE}{suffix}'
              for suffix in ('', '.stream', '.gpu_resources')}
     report = {
-        'name': 'Bingus Shared Loader', 'slug': 'BingusSharedLoader',
-        'guid': '612eaf70-d682-43c7-9efd-16dcc695f977', 'revision': revision,
-        'description': 'ARSENAL: place this loader LAST (bottom of the list) with default priority, or FIRST if first-mod priority is enabled. Required by Armory Preview Cache, Know Your Constellation, Controllable Hover Pack, Vehicle Stability, Enemy Collision Synchronized, Vanilla Plus Megapack or the separate Better Stratagem Bounce, Hellpod Steering Unlocked, Reinforcement Beacons Fixed, Consistent Vaulting, Shallow Water Diving and Sentry Aim Retention mods. Import this ZIP through Arsenal or HD2MM, enable it alongside the megapack or your chosen mods, then Deploy. Also supports HUD Ballistic Trajectory Overlay v2.',
+        'name': BRANDING['name'], 'artifact_stem': BRANDING['artifact_stem'],
+        'icon': BRANDING.get('icon', 'assets/thumbnail.png'),
+        'guid': GUID, 'revision': revision,
+        'description': 'ARSENAL: place this loader LAST (bottom of the list) with default priority, or FIRST if first-mod priority is enabled. Required by Armory Preview Cache, Know Your Constellation, Controllable Hover Pack, Vehicle Stability, Enemy Collision Synchronized, ' + BRANDING['pack']['name'] + ' or the separate Better Stratagem Bounce, Hellpod Steering Unlocked, Reinforcement Beacons Fixed, Consistent Vaulting, Shallow Water Diving and Sentry Aim Retention mods. Import this ZIP through Arsenal or HD2MM, enable it alongside the megapack or your chosen mods, then Deploy. Also supports HUD Ballistic Trajectory Overlay v2.',
         'provides': {'shared_loader_api': 1, 'addon_discovery': 1},
         'game_exe_sha256': EXE_SHA, 'game_dll_sha256': GAME_DLL_SHA,
         'deployment_files': files, 'files': {p: sha((ROOT / p).read_bytes()) for p in files.values()},

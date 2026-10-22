@@ -64,7 +64,7 @@ inside the ZIP does not update the archive: rebuild after changing your Lua code
 
 ## Build your mod
 
-From a BingusSharedLoader source checkout, use its packaging helper:
+From a MHGA Shared Loader source checkout, use its packaging helper:
 
 ```powershell
 python -B scripts/build_addon.py --name mods/your_name/your_mod --entry path/to/your_mod.lua --guid YOUR-STABLE-UUID --display-name "Your Mod" --output Your-Mod.zip
@@ -73,7 +73,7 @@ python -B scripts/build_addon.py --name mods/your_name/your_mod --entry path/to/
 The helper creates the four required files above. Generate your own UUID once
 with `python -c "import uuid; print(uuid.uuid4())"` and reuse it for updates to
 the same mod. Use a matching declaration if your script already includes one;
-the helper inserts it if it is absent. List Bingus Shared Loader v15 or newer
+the helper inserts it if it is absent. List MHGA Shared Loader v15 or newer
 as a requirement for players.
 
 To rebuild this exact example from the source checkout, run:

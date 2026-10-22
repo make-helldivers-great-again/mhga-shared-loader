@@ -1,6 +1,6 @@
 # Making a discoverable mod
 
-Bingus Shared Loader v15 adds startup discovery while keeping API 1. Existing
+MHGA Shared Loader v15 adds startup discovery while keeping API 1. Existing
 registered mods still work without repackaging. See [validation coverage](DISCOVERY_VALIDATION.md).
 What the CowboyBingus mods already use in the shared game (log and settings
 files, menus, input actions, native lists) is in the
@@ -26,7 +26,7 @@ declaration, calculates its resource hash and emits the archive, empty sidecars
 and manager manifest. It does not compile, install or execute your script.
 Keep supporting code in that script for this simple packaging route.
 
-Distribute your ZIP with a requirement for **Bingus Shared Loader v15 or newer /
+Distribute your ZIP with a requirement for **MHGA Shared Loader v15 or newer /
 API 1**. Players import both packages into Arsenal or HD2MM, enable them, and
 deploy. Managers do not automatically install the dependency. Keep the loader
 as the winning Wwise startup replacement; in default Arsenal order and HD2MM,

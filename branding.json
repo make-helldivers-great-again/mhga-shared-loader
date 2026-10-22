@@ -1,0 +1,16 @@
+{
+  "name": "MHGA Shared Loader",
+  "short_name": "MHGA Loader",
+  "artifact_stem": "MHGA-Shared-Loader",
+  "icon": "assets/mhga/thumbnail.png",
+  "pack": {
+    "name": "MHGA",
+    "artifact_stem": "MHGA",
+    "previous": [
+      {"name": "Vanilla Plus Megapack", "artifact_stem": "Vanilla-Plus-Megapack"}
+    ]
+  },
+  "previous": [
+    {"name": "Bingus Shared Loader", "artifact_stem": "Bingus-Shared-Loader"}
+  ]
+}

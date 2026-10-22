@@ -16,7 +16,7 @@ winning one. When more than one deployed archive holds a resource the loader
 starts (a registry name or a declared entry), the log names the archive whose
 copy the game loads (the highest patch) and the hidden ones, each with its kind:
 `declared`, `compiled` (LuaJIT bytecode) or `undeclared` (any other source).
-Lists name six archives and count the rest: Vanilla Plus Megapack carries its
+Lists name six archives and count the rest: MHGA carries its
 own entry in every option, so its line has one copy per enabled option. A
 declared entry whose winning copy is compiled or undeclared is still not started,
 and the log now says so and names both archives. Which entries start is
@@ -35,7 +35,7 @@ errors propagate without retrying initialization. The loader's own registry,
 logs and manager GUID remain compatible; discovery adds no Wwise replacement
 outside the existing loader package.
 
-Bingus Shared Loader owns one Lua resource: `core/wwise/lua/wwise_flow_callbacks`, hash `0x7251FDD9BB62480A`. It runs the supported original callback bytecode and then the authored coordinator. It does not own `boot` or any gameplay resource.
+MHGA Shared Loader owns one Lua resource: `core/wwise/lua/wwise_flow_callbacks`, hash `0x7251FDD9BB62480A`. It runs the supported original callback bytecode and then the authored coordinator. It does not own `boot` or any gameplay resource.
 
 The coordinator exposes `CowboyBingusModLoader.api == 1`. That internal marker remains unchanged from the former Shared Mod Loader package. Its manager GUID is `612eaf70-d682-43c7-9efd-16dcc695f977`.
 
@@ -45,7 +45,7 @@ For each registered module, the coordinator first checks `Application.can_get('l
 
 | Display name | Lua resource |
 | --- | --- |
-| Vanilla Plus Megapack | `mods/cowboybingus/vanilla_plus_megapack` |
+| MHGA | `mods/cowboybingus/vanilla_plus_megapack` |
 | Better Stratagem Bounce | `mods/cowboybingus/better_stratagem_bounce` |
 | Hellpod Steering Unlocked | `mods/cowboybingus/hellpod_steering_unlocked` |
 | Reinforcement Beacons Fixed | `mods/cowboybingus/reinforcement_beacon_fix_data` |
@@ -190,7 +190,7 @@ limit, not machine code, is what bounds the cache.
 uses its presence to leave the cache to the loader. The raised limits are always
 on; there is no switch back to the game's own limits.
 
-In recorded real play with every Vanilla Plus Megapack mod enabled (19 minutes
+In recorded real play with every MHGA mod enabled (19 minutes
 aboard the ship and an 11-minute mission), machine code reached the old 512 KB
 aboard the ship and 960 KB in 946 traces by the end, with no flush. The Lua heap
 peaked at 3.9 MB, well below the 24 MB guard.
