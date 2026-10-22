@@ -12,7 +12,10 @@ sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 from archive import LUA, TYPE, resource_hash, sha
+from branding import load as load_branding
 from package import release_directory
+
+BRANDING = load_branding(ROOT)
 
 OVERLAY_SHA = '59D2F64C5E9312C3CA3BF48CF8410FE87821C6C444AACA11090A1D0CDBB12828'
 WWISE = resource_hash('core/wwise/lua/wwise_flow_callbacks')
@@ -69,7 +72,7 @@ def main():
 
     # The package built from this build directory, named as scripts/package.py names it.
     revision = json.loads((build / 'build-report.json').read_text(encoding='utf-8'))['revision']
-    loader_zip = release_directory(ROOT) / ('Bingus-Shared-Loader-v' + revision.rsplit('v', 1)[-1] + '.zip')
+    loader_zip = release_directory(ROOT) / (BRANDING['artifact_stem'] + '-v' + revision.rsplit('v', 1)[-1] + '.zip')
     with zipfile.ZipFile(loader_zip) as package:
         loader = resources(package.read('data/9ba626afa44a3aa3.patch_0'))
     assert set(loader) == {WWISE} and loader[WWISE] == (build / 'callbacks.lua.main').read_bytes()

@@ -1,4 +1,4 @@
-"""Package a single plaintext addon entry for Bingus Shared Loader v15+."""
+"""Package a single plaintext addon entry for the shared loader (v15 or newer)."""
 import argparse
 import json
 from pathlib import Path
@@ -8,6 +8,7 @@ import uuid
 import zipfile
 
 from archive import ARCHIVE, make_archive, resource_hash
+from branding import load as load_branding
 
 
 def entry_source(name, source):
@@ -35,7 +36,7 @@ def build_addon(name, source, guid, output, display_name=None):
     resource = struct.pack('<II', len(body), 2) + body
     archive = make_archive({resource_hash(name): resource})
     title = display_name or name
-    description = 'Requires Bingus Shared Loader v15 or newer / API 1. Enable both and deploy.'
+    description = f"Requires {load_branding()['name']} v15 or newer / API 1. Enable both and deploy."
     manifest = {'Version': 1, 'Guid': guid, 'Name': title, 'Description': description,
                 'Options': [{'Name': title, 'Description': description, 'Include': ['Addon']}]}
     files = {'manifest.json': (json.dumps(manifest, indent=2) + '\n').encode(),

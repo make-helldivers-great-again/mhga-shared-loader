@@ -22,17 +22,17 @@ def package_release(root: Path, build: Path, report: dict, directory: Path = Non
         if digest(data) != report['files'][source]:
             raise ValueError('Build output changed before packaging: ' + source)
         files[destination] = data
-    slug = report['slug']
+    stem = report['artifact_stem']  # file names only; from branding.json, never used as identity
     # Public names share one format; provenance keeps the internal build revision.
     release_version = 'v' + str(report.get('version') or report['revision']).rsplit('v', 1)[-1]
     display_name = report['name'] + ' - ' + release_version
-    release_stem = report['name'].replace(' ', '-') + '-' + release_version
-    files[slug + '-README.txt'] = (root / 'INSTALL.txt').read_bytes()
-    thumbnail = root / 'assets/thumbnail.png'
+    release_stem = stem + '-' + release_version
+    files[stem + '-README.txt'] = (root / 'INSTALL.txt').read_bytes()
+    thumbnail = root / report.get('icon', 'assets/thumbnail.png')  # the box icon; named thumbnail.png inside the package
     if thumbnail.is_file():
         files['thumbnail.png'] = thumbnail.read_bytes()
     provenance = {
-        'name': report['name'], 'revision': report['revision'], 'display_version': release_version,
+        'name': report['name'], 'artifact_stem': stem, 'revision': report['revision'], 'display_version': release_version,
         'steam_build': 25480438, 'exe_version': '1.8.46015.0',
         'game_exe_sha256': report['game_exe_sha256'],
         'game_dll_sha256': report['game_dll_sha256'],
@@ -42,7 +42,7 @@ def package_release(root: Path, build: Path, report: dict, directory: Path = Non
     for key in ('requires', 'provides'):
         if key in report:
             provenance[key] = report[key]
-    files[slug + '-manifest.json'] = (json.dumps(provenance, indent=2) + '\n').encode()
+    files[stem + '-manifest.json'] = (json.dumps(provenance, indent=2) + '\n').encode()
     option = {'Name': display_name, 'Description': report['description'], 'Include': ['data']}
     manager = {'Version': 1, 'Guid': report['guid'], 'Name': display_name,
                'Description': report['description'], 'Options': [option]}

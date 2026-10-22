@@ -58,6 +58,16 @@ jobs:
           set -e
           if [ "$code" -ge 2 ]; then exit 1; fi
 
+  identity-and-branding:
+    name: Identity and protocol are not tied to the name
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Branding is display-only (identity and protocol are pinned and never derived from the name)
+        run: python3 tests/test_branding.py -v
+      - name: Branding is applied everywhere it should be
+        run: python3 .github/scripts/rebrand.py --check
+
   json-validity:
     name: JSON validity
     runs-on: ubuntu-latest

@@ -8,6 +8,9 @@ import json
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
 from archive import resource_hash
+from build import GUID
+
+LOADER = 'the shared loader'   # the loader is identified by its manager GUID, never by its display name
 
 
 def resources(path):
@@ -15,9 +18,9 @@ def resources(path):
         data = package.read('data/9ba626afa44a3aa3.patch_0')
         manager = json.loads(package.read('manifest.json'))
         provenance = json.loads(package.read(next(n for n in package.namelist() if n.endswith('-manifest.json'))))
-        name = provenance['name']
-        assert manager['Name'] == name + ' - ' + provenance['display_version']
-    owners = {'Bingus Shared Loader': 'core/wwise/lua/wwise_flow_callbacks',
+        assert manager['Name'] == provenance['name'] + ' - ' + provenance['display_version']
+        name = LOADER if manager['Guid'] == GUID else provenance['name']
+    owners = {LOADER: 'core/wwise/lua/wwise_flow_callbacks',
               'Better Stratagem Bounce': 'mods/cowboybingus/better_stratagem_bounce',
               'Hellpod Steering Unlocked': 'mods/cowboybingus/hellpod_steering_unlocked',
               'Wide Angle Stratagems': 'mods/cowboybingus/wide_angle_stratagems',
@@ -43,7 +46,7 @@ def main():
     assert 3 <= len(entries) <= 8
     names = {name for name, _ in entries}
     assert len(names) == len(entries)
-    assert {'Bingus Shared Loader', 'Better Stratagem Bounce', 'Hellpod Steering Unlocked'} <= names
+    assert {LOADER, 'Better Stratagem Bounce', 'Hellpod Steering Unlocked'} <= names
     packages = [data for _, data in entries]
     assert resource_hash('boot') == 0xF476DF93691895FA
     shared = resource_hash('core/wwise/lua/wwise_flow_callbacks')
@@ -62,7 +65,7 @@ def main():
             active = {}
             for _, package in remaining: active.update(package)
             assert len(active) == count
-            assert (shared in active) == any(name == 'Bingus Shared Loader' for name, _ in remaining)
+            assert (shared in active) == any(name == LOADER for name, _ in remaining)
             assert resource_hash('boot') not in active
     print('PASS: distinct resource owners, zero mutual conflicts, every load order and removal subset')
 
